@@ -1,0 +1,38 @@
+# mapVISTA
+
+
+QAORA01=
+(DESCRIPTION=
+  (ADDRESS=
+    (PROTOCOL=TCP)
+    (HOST=10.1.2.62)
+    (PORT=1521)
+  )
+  (CONNECT_DATA=
+    (SERVICE_NAME=QAORA01)
+  )
+) 
+
+MAPVSPRE=
+(DESCRIPTION=
+  (ADDRESS=
+    (PROTOCOL=TCP)
+    (HOST=vmapvistadbpre01srv.prod.airtel.es)
+    (PORT=1521)
+  )
+  (CONNECT_DATA=
+    (SERVICE_NAME=MAPVSPRE)
+  )
+) 
+
+MAPVST=
+  (DESCRIPTION=
+    (ADDRESS=
+      (PROTOCOL=TCP)
+      (HOST=vistaracscan.prod.airtel.es)
+      (PORT=1521)
+    )
+    (CONNECT_DATA=
+      (SERVICE_NAME=MAPVST)
+    )
+  ) 

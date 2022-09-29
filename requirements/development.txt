@@ -28,6 +28,8 @@ certifi==2021.10.8
     # via requests
 chardet==4.0.0
     # via tabulator
+cx_Oracle==8.3
+    # via apache-superset
 decorator==5.1.1
     # via ipython
 et-xmlfile==1.1.0
@@ -60,6 +62,8 @@ openpyxl==3.0.7
     # via tabulator
 parso==0.8.3
     # via jedi
+paramiko==2.11.0
+    # via apache-superset
 pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5

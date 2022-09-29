@@ -61,6 +61,7 @@ class ReportScheduleValidatorType(str, enum.Enum):
 class ReportRecipientType(str, enum.Enum):
     EMAIL = "Email"
     SLACK = "Slack"
+    SFTP = "Sftp"
 
 
 class ReportState(str, enum.Enum):

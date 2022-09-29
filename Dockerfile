@@ -80,7 +80,8 @@ ENV LANG=C.UTF-8 \
     FLASK_APP="superset.app:create_app()" \
     PYTHONPATH="/app/pythonpath" \
     SUPERSET_HOME="/app/superset_home" \
-    SUPERSET_PORT=8088
+    SUPERSET_PORT=8088 \
+    LD_LIBRARY_PATH=/opt/oracle/instantclient_21_1:$LD_LIBRARY_PATH
 
 RUN mkdir -p ${PYTHONPATH} \
         && useradd --user-group -d ${SUPERSET_HOME} -m --no-log-init --shell /bin/bash superset \
@@ -91,7 +92,12 @@ RUN mkdir -p ${PYTHONPATH} \
             libsasl2-modules-gssapi-mit \
             libpq-dev \
             libecpg-dev \
-        && rm -rf /var/lib/apt/lists/*
+        && apt install libaio1 \
+        && rm -rf /var/lib/apt/lists/* \
+        && mkdir -p /opt/oracle/instantclient_21_1
+
+COPY install_files/instantclient_21_1 /opt/oracle/instantclient_21_1
+COPY install_files/tnsnames.ora /opt/oracle/instantclient_21_1/network/admin
 
 COPY --from=superset-py /usr/local/lib/python3.8/site-packages/ /usr/local/lib/python3.8/site-packages/
 # Copying site-packages doesn't move the CLIs, so let's copy them one by one
