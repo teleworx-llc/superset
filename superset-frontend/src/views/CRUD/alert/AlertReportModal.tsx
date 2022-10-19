@@ -440,6 +440,10 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
   const [notificationSettings, setNotificationSettings] = useState<
     NotificationSetting[]
   >([]);
+  const [usernameSftpValue, setUsernameSftpValue] = useState<string>('');
+  const [passwordSftpValue, setPasswordSftpValue] = useState<string>('');
+  const [portSftpValue, setPortSftpValue] = useState<string>('');
+  const [routeSftpValue, setRouteSftpValue] = useState<string>('');
 
   const onNotificationAdd = () => {
     const settings: NotificationSetting[] = notificationSettings.slice();
@@ -504,12 +508,25 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
 
     notificationSettings.forEach(setting => {
       if (setting.method && setting.recipients.length) {
-        recipients.push({
-          recipient_config_json: {
-            target: setting.recipients,
-          },
-          type: setting.method,
-        });
+        if (setting.method === 'Sftp') {
+          recipients.push({
+            recipient_config_json: {
+              target: setting.recipients,
+              username: usernameSftpValue,
+              password: passwordSftpValue,
+              port: portSftpValue,
+              route: routeSftpValue,
+            },
+            type: setting.method,
+          });
+        } else {
+          recipients.push({
+            recipient_config_json: {
+              target: setting.recipients,
+            },
+            type: setting.method,
+          });
+        }
       }
     });
 
@@ -1394,6 +1411,14 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                 key={`NotificationMethod-${i}`}
                 onUpdate={updateNotificationSetting}
                 onRemove={removeNotificationSetting}
+                usernameSftpValue={usernameSftpValue}
+                passwordSftpValue={passwordSftpValue}
+                portSftpValue={portSftpValue}
+                routeSftpValue={routeSftpValue}
+                setUsernameSftpValue={setUsernameSftpValue}
+                setPasswordSftpValue={setPasswordSftpValue}
+                setPortSftpValue={setPortSftpValue}
+                setRouteSftpValue={setRouteSftpValue}
               />
             ))}
             <NotificationMethodAdd

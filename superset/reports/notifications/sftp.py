@@ -85,7 +85,6 @@ class SftpNotification(BaseNotification):
 
             sftp_client.close()
             ssh.close()
-            print(host_ip)
 
         except Exception as ex:
                 raise NotificationError(ex) from ex

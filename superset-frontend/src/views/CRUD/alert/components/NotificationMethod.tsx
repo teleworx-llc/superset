@@ -16,7 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { FunctionComponent, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { styled, t, useTheme } from '@superset-ui/core';
 import { Select } from 'src/components';
 import Icons from 'src/components/Icons';
@@ -61,6 +66,14 @@ interface NotificationMethodProps {
   index: number;
   onUpdate?: (index: number, updatedSetting: NotificationSetting) => void;
   onRemove?: (index: number) => void;
+  usernameSftpValue: string;
+  passwordSftpValue: string;
+  portSftpValue: string;
+  routeSftpValue: string;
+  setUsernameSftpValue: Dispatch<SetStateAction<string>>;
+  setPasswordSftpValue: Dispatch<SetStateAction<string>>;
+  setPortSftpValue: Dispatch<SetStateAction<string>>;
+  setRouteSftpValue: Dispatch<SetStateAction<string>>;
 }
 
 export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
@@ -68,6 +81,14 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
   index,
   onUpdate,
   onRemove,
+  usernameSftpValue,
+  passwordSftpValue,
+  portSftpValue,
+  routeSftpValue,
+  setUsernameSftpValue,
+  setPasswordSftpValue,
+  setPortSftpValue,
+  setRouteSftpValue,
 }) => {
   const { method, recipients, options } = setting || {};
   const [recipientValue, setRecipientValue] = useState<string>(
@@ -110,10 +131,37 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
     }
   };
 
+  const onUsernameSftpChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const { target } = event;
+    setUsernameSftpValue(target.value);
+  };
+
+  const onPasswordSftpChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const { target } = event;
+    setPasswordSftpValue(target.value);
+  };
+
+  const onPortSftpChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { target } = event;
+    setPortSftpValue(target.value);
+  };
+
+  const onRouteSftpChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { target } = event;
+    setRouteSftpValue(target.value);
+  };
+
   // Set recipients
   if (!!recipients && recipientValue !== recipients) {
     setRecipientValue(recipients);
   }
+
+  const recipientInputDisplay = method === 'Sftp' ? 'flex' : 'none';
+  // const recipientInputDisplay = 'block';
 
   return (
     <StyledNotificationMethod>
@@ -147,19 +195,82 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
         ) : null}
       </div>
       {method !== undefined ? (
-        <StyledInputContainer>
-          <div className="control-label">{t(method)}</div>
-          <div className="input-container">
-            <textarea
-              name="recipients"
-              value={recipientValue}
-              onChange={onRecipientsChange}
-            />
-          </div>
+        <>
+          <StyledInputContainer>
+            <div className="control-label">
+              {method === 'Sftp' ? 'IP' : t(method)}
+            </div>{' '}
+            {}
+            <div className="input-container">
+              <textarea
+                name="recipients"
+                value={recipientValue}
+                onChange={onRecipientsChange}
+              />
+            </div>
+          </StyledInputContainer>
+          {method === 'Sftp' && (
+            <>
+              <StyledInputContainer>
+                <div className="control-label">USERNAME</div>
+                <div
+                  className="input-container"
+                  style={{ display: recipientInputDisplay }}
+                >
+                  <textarea
+                    name="username"
+                    value={usernameSftpValue}
+                    onChange={onUsernameSftpChange}
+                  />
+                </div>
+              </StyledInputContainer>
+
+              <StyledInputContainer>
+                <div className="control-label">PASSWORD</div>
+                <div className="input-container">
+                  <textarea
+                    name="password"
+                    value={passwordSftpValue}
+                    onChange={onPasswordSftpChange}
+                  />
+                </div>
+              </StyledInputContainer>
+
+              <StyledInputContainer>
+                <div className="control-label">PORT</div>
+                <div
+                  className="input-container"
+                  style={{ display: recipientInputDisplay }}
+                >
+                  <textarea
+                    name="port"
+                    value={portSftpValue}
+                    onChange={onPortSftpChange}
+                  />
+                </div>
+              </StyledInputContainer>
+
+              <StyledInputContainer>
+                <div className="control-label">ROUTE</div>
+                <div
+                  className="input-container"
+                  style={{ display: recipientInputDisplay }}
+                >
+                  <textarea
+                    name="route"
+                    value={routeSftpValue}
+                    onChange={onRouteSftpChange}
+                  />
+                </div>
+              </StyledInputContainer>
+            </>
+          )}
           <div className="helper">
-            {t('Recipients are separated by "," or ";"')}
+            {method === 'Sftp'
+              ? 'Route must end with "/"'
+              : t('Recipients are separated by "," or ";"')}
           </div>
-        </StyledInputContainer>
+        </>
       ) : null}
     </StyledNotificationMethod>
   );

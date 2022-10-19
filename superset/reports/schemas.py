@@ -109,6 +109,12 @@ class ValidatorConfigJSONSchema(Schema):
 class ReportRecipientConfigJSONSchema(Schema):
     # TODO if email check validity
     target = fields.String()
+    username = fields.String()
+    password = fields.String()
+    port = fields.String()
+    route = fields.String()
+    
+    
 
 
 class ReportRecipientSchema(Schema):

@@ -46,6 +46,10 @@ export type NotificationMethodOption = 'Email' | 'Slack' | 'Sftp';
 export type Recipient = {
   recipient_config_json: {
     target: string;
+    username?: string;
+    password?: string;
+    port?: string;
+    route?: string;
   };
   type: NotificationMethodOption;
 };

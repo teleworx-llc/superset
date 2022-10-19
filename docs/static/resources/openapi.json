@@ -5762,7 +5762,8 @@
             "description": "The recipient type, check spec for valid options",
             "enum": [
               "Email",
-              "Slack"
+              "Slack",
+              "Sftp"
             ],
             "type": "string"
           }
@@ -5775,6 +5776,18 @@
       "ReportRecipientConfigJSON": {
         "properties": {
           "target": {
+            "type": "string"
+          },
+          "username":{
+            "type": "string"
+          },
+          "password":{
+            "type": "string"
+          },
+          "port":{
+            "type": "string"
+          },
+          "route":{
             "type": "string"
           }
         },

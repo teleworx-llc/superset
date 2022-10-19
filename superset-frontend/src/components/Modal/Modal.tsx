@@ -134,6 +134,7 @@ export const StyledModal = styled(BaseModal)<StyledModalProps>`
     flex: 0 1 auto;
     padding: ${({ theme }) => theme.gridUnit * 4}px;
     overflow: auto;
+    overflow-y: scroll !important;
     ${({ resizable, height }) => !resizable && height && `height: ${height};`}
   }
   .ant-modal-footer {
