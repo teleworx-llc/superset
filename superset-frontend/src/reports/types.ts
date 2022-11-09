@@ -17,13 +17,15 @@
  * under the License.
  */
 
+import { RecipientConfigJson } from 'src/views/CRUD/alert/types';
+
 /**
  * Types mirroring enums in `superset/reports/models.py`:
  */
 export type ReportScheduleType = 'Alert' | 'Report';
 export type ReportCreationMethod = 'charts' | 'dashboards' | 'alerts_reports';
 
-export type ReportRecipientType = 'Email' | 'Slack' | 'Sftp';
+export type ReportRecipientType = 'Email' | 'Slack' | 'Sftp' | 'Samba';
 
 export enum ReportType {
   DASHBOARDS = 'dashboards',
@@ -46,7 +48,7 @@ export interface ReportObject {
   name: string;
   owners: number[];
   recipients: [
-    { recipient_config_json: { target: string }; type: ReportRecipientType },
+    { recipient_config_json: RecipientConfigJson; type: ReportRecipientType },
   ];
   report_format: string;
   timezone: string;

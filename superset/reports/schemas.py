@@ -113,6 +113,9 @@ class ReportRecipientConfigJSONSchema(Schema):
     password = fields.String()
     port = fields.String()
     route = fields.String()
+    timestamp = fields.Boolean()
+    server = fields.String()
+    folder = fields.String()
     
     
 

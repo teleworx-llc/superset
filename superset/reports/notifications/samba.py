@@ -19,8 +19,10 @@
 import json
 import logging
 import re
-import paramiko
+import socket
+import tempfile
 from datetime import datetime
+from smb.SMBConnection import SMBConnection
 from io import IOBase
 from io import BytesIO
 from io import StringIO
@@ -36,12 +38,11 @@ from superset.reports.notifications.exceptions import NotificationError
 
 logger = logging.getLogger(__name__)
 
-class SftpNotification(BaseNotification):
+class SambaNotification(BaseNotification):
     """
-    Sends an sftp notification for a report recipient
+    Sends a samba notification for a report recipient
     """
-    type = ReportRecipientType.SFTP
-
+    type = ReportRecipientType.SAMBA
 
     def _get_data(self, tag_name) -> str:
         return json.loads(self._recipient.recipient_config_json)[tag_name]
@@ -54,17 +55,18 @@ class SftpNotification(BaseNotification):
             return self._content.screenshots
         return []
 
-
     def send(self) -> None:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        host_ip = self._get_data("target")
-        host_username = self._get_data("username")
-        host_password = self._get_data("password")
-        host_port = self._get_data("port")
-        send_route = self._get_data("route")
+        client_machine_name = socket.gethostname()
+        user_ID = self._get_data("username")
+        password = self._get_data("password")
+        server_name = self._get_data("server")
+        shared_folder = self._get_data("folder")
+        path = "Temp" #self._get_data("route")
+        server_ip = self._get_data("target")
         timestamp = self._get_data("timestamp")
-        
+
+        #file_obj = open('/app/superset/reports/notifications/test2.txt', 'rb')
+
         if self._content.csv:
             file_type = '.csv'
         elif self._content.screenshots:
@@ -83,20 +85,27 @@ class SftpNotification(BaseNotification):
         files = self._get_inline_files()
 
         try:
-            ssh.connect(hostname=host_ip, username=host_username, password=host_password, port=host_port)
-            sftp_client = ssh.open_sftp()
+
+            conn = SMBConnection(user_ID, password, client_machine_name, server_name, use_ntlm_v2 = True)
+            assert conn.connect(server_ip, 139)
 
             if files:
                 for file in files:
-                    sftp_client.putfo(BytesIO(file), send_route+file_name)
+                    temp = tempfile.TemporaryFile()
+                    temp.write(file)
+                    temp.seek(0)
+                    conn.storeFile(path, shared_folder + file_name, temp)
+
             else:
-                sftp_client.putfo(StringIO(self._content.embedded_data.to_string()), send_route+file_name, confirm=False)
+                content = str.encode(self._content.embedded_data.to_string())
+                temp = tempfile.TemporaryFile()
+                temp.write(content)
+                temp.seek(0)
+                conn.storeFile(path, shared_folder + file_name, temp) 
 
-            sftp_client.close()
-            ssh.close()
-
+            conn.close()
+            
         except Exception as ex:
                 raise NotificationError(ex) from ex
-
 
 

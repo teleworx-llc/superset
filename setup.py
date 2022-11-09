@@ -107,6 +107,7 @@ setup(
         "pyarrow>=5.0.0, <6.0",
         "pyyaml>=5.4",
         "PyJWT>=2.4.0, <3.0",
+        "pysmb==1.2.8",
         "redis",
         "selenium>=3.141.0",
         "simplejson>=3.15.0",

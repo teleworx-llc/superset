@@ -20,6 +20,7 @@ from superset.reports.notifications.base import BaseNotification, NotificationCo
 from superset.reports.notifications.email import EmailNotification
 from superset.reports.notifications.slack import SlackNotification
 from superset.reports.notifications.sftp import SftpNotification
+from superset.reports.notifications.samba import SambaNotification
 
 
 def create_notification(

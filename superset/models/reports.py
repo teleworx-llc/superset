@@ -62,6 +62,7 @@ class ReportRecipientType(str, enum.Enum):
     EMAIL = "Email"
     SLACK = "Slack"
     SFTP = "Sftp"
+    SAMBA = "Samba"
 
 
 class ReportState(str, enum.Enum):

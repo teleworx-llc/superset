@@ -360,11 +360,13 @@ def common_bootstrap_payload() -> Dict[str, Any]:
             ReportRecipientType.EMAIL,
             ReportRecipientType.SLACK,
             ReportRecipientType.SFTP,
+            ReportRecipientType.SAMBA,
         ]
     else:
         frontend_config["ALERT_REPORTS_NOTIFICATION_METHODS"] = [
             ReportRecipientType.EMAIL,
             ReportRecipientType.SFTP,
+            ReportRecipientType.SAMBA
         ]
 
     # verify client has google sheets installed

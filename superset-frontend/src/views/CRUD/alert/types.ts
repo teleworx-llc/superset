@@ -41,17 +41,22 @@ export type DatabaseObject = {
   id: number;
 };
 
-export type NotificationMethodOption = 'Email' | 'Slack' | 'Sftp';
+export type NotificationMethodOption = 'Email' | 'Slack' | 'Sftp' | 'Samba';
 
 export type Recipient = {
-  recipient_config_json: {
-    target: string;
-    username?: string;
-    password?: string;
-    port?: string;
-    route?: string;
-  };
+  recipient_config_json: RecipientConfigJson;
   type: NotificationMethodOption;
+};
+
+export type RecipientConfigJson = {
+  target: string;
+  username?: string;
+  password?: string;
+  port?: string;
+  route?: string;
+  timestamp?: boolean;
+  server?: string;
+  folder?: string;
 };
 
 export type MetaObject = {
@@ -121,4 +126,5 @@ export enum RecipientIconName {
   Email = 'Email',
   Slack = 'Slack',
   Sftp = 'Sftp',
+  Samba = 'Samba',
 }

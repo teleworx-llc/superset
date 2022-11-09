@@ -19,13 +19,17 @@
 import React, {
   FunctionComponent,
   useState,
+  useEffect,
   Dispatch,
   SetStateAction,
 } from 'react';
 import { styled, t, useTheme } from '@superset-ui/core';
 import { Select } from 'src/components';
 import Icons from 'src/components/Icons';
-import { NotificationMethodOption } from 'src/views/CRUD/alert/types';
+import {
+  NotificationMethodOption,
+  RecipientConfigJson,
+} from 'src/views/CRUD/alert/types';
 import { StyledInputContainer } from '../AlertReportModal';
 
 const StyledNotificationMethod = styled.div`
@@ -57,7 +61,7 @@ const StyledNotificationMethod = styled.div`
 
 type NotificationSetting = {
   method?: NotificationMethodOption;
-  recipients: string;
+  recipients: RecipientConfigJson;
   options: NotificationMethodOption[];
 };
 
@@ -66,14 +70,20 @@ interface NotificationMethodProps {
   index: number;
   onUpdate?: (index: number, updatedSetting: NotificationSetting) => void;
   onRemove?: (index: number) => void;
-  usernameSftpValue: string;
-  passwordSftpValue: string;
-  portSftpValue: string;
-  routeSftpValue: string;
-  setUsernameSftpValue: Dispatch<SetStateAction<string>>;
-  setPasswordSftpValue: Dispatch<SetStateAction<string>>;
-  setPortSftpValue: Dispatch<SetStateAction<string>>;
-  setRouteSftpValue: Dispatch<SetStateAction<string>>;
+  usernameValue: string;
+  passwordValue: string;
+  portValue: string;
+  routeValue: string;
+  timestampValue: boolean;
+  serverValue: string;
+  folderValue: string;
+  setUsernameValue: Dispatch<SetStateAction<string>>;
+  setPasswordValue: Dispatch<SetStateAction<string>>;
+  setPortValue: Dispatch<SetStateAction<string>>;
+  setRouteValue: Dispatch<SetStateAction<string>>;
+  setTimestampValue: Dispatch<SetStateAction<boolean>>;
+  setServerValue: Dispatch<SetStateAction<string>>;
+  setFolderValue: Dispatch<SetStateAction<string>>;
 }
 
 export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
@@ -81,20 +91,50 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
   index,
   onUpdate,
   onRemove,
-  usernameSftpValue,
-  passwordSftpValue,
-  portSftpValue,
-  routeSftpValue,
-  setUsernameSftpValue,
-  setPasswordSftpValue,
-  setPortSftpValue,
-  setRouteSftpValue,
+  usernameValue,
+  passwordValue,
+  portValue,
+  routeValue,
+  timestampValue,
+  serverValue,
+  folderValue,
+  setUsernameValue,
+  setPasswordValue,
+  setPortValue,
+  setRouteValue,
+  setTimestampValue,
+  setServerValue,
+  setFolderValue,
 }) => {
   const { method, recipients, options } = setting || {};
   const [recipientValue, setRecipientValue] = useState<string>(
-    recipients || '',
+    recipients?.target || '',
   );
   const theme = useTheme();
+
+  useEffect(() => {
+    if (recipients?.username) {
+      setUsernameValue(recipients?.username);
+    }
+    if (recipients?.password) {
+      setPasswordValue(recipients?.password);
+    }
+    if (recipients?.port) {
+      setPortValue(recipients?.port);
+    }
+    if (recipients?.route) {
+      setRouteValue(recipients?.route);
+    }
+    if (recipients?.timestamp) {
+      setTimestampValue(recipients?.timestamp);
+    }
+    if (recipients?.server) {
+      setServerValue(recipients?.server);
+    }
+    if (recipients?.folder) {
+      setFolderValue(recipients?.folder);
+    }
+  }, []);
 
   if (!setting) {
     return null;
@@ -104,12 +144,53 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
     // Since we're swapping the method, reset the recipients
     setRecipientValue('');
     if (onUpdate) {
-      const updatedSetting = {
+      let updatedSetting: NotificationSetting = {
         ...setting,
         method,
-        recipients: '',
+        recipients: {
+          target: '',
+        },
       };
-
+      if (method === 'Sftp') {
+        updatedSetting = {
+          ...setting,
+          method,
+          recipients: {
+            target: '',
+            username: '',
+            password: '',
+            port: '',
+            route: '',
+            timestamp: false,
+          },
+        };
+        setUsernameValue('');
+        setPasswordValue('');
+        setPortValue('');
+        setRouteValue('');
+        setTimestampValue(false);
+      }
+      if (method === 'Samba') {
+        updatedSetting = {
+          ...setting,
+          method,
+          recipients: {
+            target: '',
+            username: '',
+            password: '',
+            server: '',
+            folder: '',
+            route: '',
+            timestamp: false,
+          },
+        };
+        setUsernameValue('');
+        setPasswordValue('');
+        setServerValue('');
+        setRouteValue('');
+        setFolderValue('');
+        setTimestampValue(false);
+      }
       onUpdate(index, updatedSetting);
     }
   };
@@ -124,44 +205,52 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
     if (onUpdate) {
       const updatedSetting = {
         ...setting,
-        recipients: target.value,
+        recipients: { ...recipients, target: target.value },
       };
 
       onUpdate(index, updatedSetting);
     }
   };
 
-  const onUsernameSftpChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
+  const onUsernameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { target } = event;
-    setUsernameSftpValue(target.value);
+    setUsernameValue(target.value);
   };
 
-  const onPasswordSftpChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
+  const onPasswordChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { target } = event;
-    setPasswordSftpValue(target.value);
+    setPasswordValue(target.value);
   };
 
-  const onPortSftpChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onPortChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { target } = event;
-    setPortSftpValue(target.value);
+    setPortValue(target.value);
   };
 
-  const onRouteSftpChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onRouteChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { target } = event;
-    setRouteSftpValue(target.value);
+    setRouteValue(target.value);
+  };
+
+  const onTimestampChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { target } = event;
+    setTimestampValue(target.checked);
+  };
+
+  const onServerChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { target } = event;
+    setServerValue(target.value);
+  };
+
+  const onFolderChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { target } = event;
+    setFolderValue(target.value);
   };
 
   // Set recipients
-  if (!!recipients && recipientValue !== recipients) {
-    setRecipientValue(recipients);
+  if (!!recipients && recipientValue !== recipients.target) {
+    setRecipientValue(recipients.target);
   }
-
-  const recipientInputDisplay = method === 'Sftp' ? 'flex' : 'none';
-  // const recipientInputDisplay = 'block';
 
   return (
     <StyledNotificationMethod>
@@ -198,7 +287,7 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
         <>
           <StyledInputContainer>
             <div className="control-label">
-              {method === 'Sftp' ? 'IP' : t(method)}
+              {method === 'Sftp' || method === 'Samba' ? 'IP' : t(method)}
             </div>{' '}
             {}
             <div className="input-container">
@@ -209,67 +298,110 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
               />
             </div>
           </StyledInputContainer>
-          {method === 'Sftp' && (
-            <>
-              <StyledInputContainer>
-                <div className="control-label">USERNAME</div>
-                <div
-                  className="input-container"
-                  style={{ display: recipientInputDisplay }}
-                >
-                  <textarea
-                    name="username"
-                    value={usernameSftpValue}
-                    onChange={onUsernameSftpChange}
-                  />
-                </div>
-              </StyledInputContainer>
-
-              <StyledInputContainer>
-                <div className="control-label">PASSWORD</div>
-                <div className="input-container">
-                  <textarea
-                    name="password"
-                    value={passwordSftpValue}
-                    onChange={onPasswordSftpChange}
-                  />
-                </div>
-              </StyledInputContainer>
-
-              <StyledInputContainer>
-                <div className="control-label">PORT</div>
-                <div
-                  className="input-container"
-                  style={{ display: recipientInputDisplay }}
-                >
-                  <textarea
-                    name="port"
-                    value={portSftpValue}
-                    onChange={onPortSftpChange}
-                  />
-                </div>
-              </StyledInputContainer>
-
-              <StyledInputContainer>
-                <div className="control-label">ROUTE</div>
-                <div
-                  className="input-container"
-                  style={{ display: recipientInputDisplay }}
-                >
-                  <textarea
-                    name="route"
-                    value={routeSftpValue}
-                    onChange={onRouteSftpChange}
-                  />
-                </div>
-              </StyledInputContainer>
-            </>
+          {(method === 'Sftp' || method === 'Samba') && (
+            <StyledInputContainer>
+              <div className="control-label">USERNAME</div>
+              <div className="input-container">
+                <textarea
+                  name="username"
+                  value={usernameValue}
+                  onChange={onUsernameChange}
+                />
+              </div>
+            </StyledInputContainer>
           )}
-          <div className="helper">
-            {method === 'Sftp'
-              ? 'Route must end with "/"'
-              : t('Recipients are separated by "," or ";"')}
-          </div>
+
+          {(method === 'Sftp' || method === 'Samba') && (
+            <StyledInputContainer>
+              <div className="control-label">PASSWORD</div>
+              <div className="input-container">
+                <textarea
+                  name="password"
+                  value={passwordValue}
+                  onChange={onPasswordChange}
+                />
+              </div>
+            </StyledInputContainer>
+          )}
+
+          {method === 'Sftp' && (
+            <StyledInputContainer>
+              <div className="control-label">PORT</div>
+              <div className="input-container">
+                <textarea
+                  name="port"
+                  value={portValue}
+                  onChange={onPortChange}
+                />
+              </div>
+            </StyledInputContainer>
+          )}
+          {method === 'Samba' && (
+            <StyledInputContainer>
+              <div className="control-label">SERVER</div>
+              <div className="input-container">
+                <textarea
+                  name="server"
+                  value={serverValue}
+                  onChange={onServerChange}
+                />
+              </div>
+            </StyledInputContainer>
+          )}
+          {(method === 'Sftp' || method === 'Samba') && (
+            <StyledInputContainer>
+              <div className="control-label">ROUTE</div>
+              <div className="input-container">
+                <textarea
+                  name="route"
+                  value={routeValue}
+                  onChange={onRouteChange}
+                />
+              </div>
+            </StyledInputContainer>
+          )}
+          {method === 'Samba' && (
+            <StyledInputContainer>
+              <div className="control-label">FOLDER</div>
+              <div className="input-container">
+                <textarea
+                  name="path"
+                  value={folderValue}
+                  onChange={onFolderChange}
+                />
+              </div>
+            </StyledInputContainer>
+          )}
+          {(method === 'Sftp' || method === 'Samba') && (
+            <StyledInputContainer>
+              <div className="input-container">
+                <label
+                  htmlFor="timestamp"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    id="timestamp"
+                    onChange={onTimestampChange}
+                    checked={timestampValue}
+                    style={{ margin: '0' }}
+                  />
+                  Show timestamp on report name
+                </label>
+              </div>
+            </StyledInputContainer>
+          )}
+          {method !== 'Samba' && (
+            <div className="helper">
+              {method === 'Sftp'
+                ? 'Route must end with "/"'
+                : t('Recipients are separated by "," or ";"')}
+            </div>
+          )}
         </>
       ) : null}
     </StyledNotificationMethod>

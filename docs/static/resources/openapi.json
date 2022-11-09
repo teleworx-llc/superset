@@ -5763,7 +5763,8 @@
             "enum": [
               "Email",
               "Slack",
-              "Sftp"
+              "Sftp",
+              "Samba"
             ],
             "type": "string"
           }
@@ -5788,6 +5789,15 @@
             "type": "string"
           },
           "route":{
+            "type": "string"
+          },
+          "timestamp":{
+            "type": "boolean"
+          },
+          "server":{
+            "type": "string"
+          },
+          "folder":{
             "type": "string"
           }
         },

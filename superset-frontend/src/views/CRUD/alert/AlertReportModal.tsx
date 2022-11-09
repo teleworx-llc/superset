@@ -54,6 +54,7 @@ import {
   MetaObject,
   Operator,
   Recipient,
+  RecipientConfigJson,
 } from 'src/views/CRUD/alert/types';
 import { InfoTooltipWithTrigger } from '@superset-ui/chart-controls';
 import { AlertReportCronScheduler } from './components/AlertReportCronScheduler';
@@ -394,7 +395,7 @@ const NotificationMethodAdd: FunctionComponent<NotificationMethodAddProps> = ({
 
 type NotificationSetting = {
   method?: NotificationMethodOption;
-  recipients: string;
+  recipients: RecipientConfigJson;
   options: NotificationMethodOption[];
 };
 
@@ -440,16 +441,19 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
   const [notificationSettings, setNotificationSettings] = useState<
     NotificationSetting[]
   >([]);
-  const [usernameSftpValue, setUsernameSftpValue] = useState<string>('');
-  const [passwordSftpValue, setPasswordSftpValue] = useState<string>('');
-  const [portSftpValue, setPortSftpValue] = useState<string>('');
-  const [routeSftpValue, setRouteSftpValue] = useState<string>('');
+  const [usernameValue, setUsernameValue] = useState<string>('');
+  const [passwordValue, setPasswordValue] = useState<string>('');
+  const [portValue, setPortValue] = useState<string>('');
+  const [routeValue, setRouteValue] = useState<string>('');
+  const [timestampValue, setTimestampValue] = useState<boolean>(false);
+  const [serverValue, setServerValue] = useState<string>('');
+  const [folderValue, setFolderValue] = useState<string>('/');
 
   const onNotificationAdd = () => {
     const settings: NotificationSetting[] = notificationSettings.slice();
 
     settings.push({
-      recipients: '',
+      recipients: { target: '' },
       options: allowedNotificationMethods,
     });
 
@@ -507,22 +511,39 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
     const recipients: Recipient[] = [];
 
     notificationSettings.forEach(setting => {
-      if (setting.method && setting.recipients.length) {
+      if (setting.method && setting.recipients.target.length) {
         if (setting.method === 'Sftp') {
           recipients.push({
             recipient_config_json: {
-              target: setting.recipients,
-              username: usernameSftpValue,
-              password: passwordSftpValue,
-              port: portSftpValue,
-              route: routeSftpValue,
+              target: setting.recipients.target,
+              username: usernameValue,
+              password: passwordValue,
+              port: portValue,
+              route: routeValue,
+              timestamp: timestampValue,
+            },
+            type: setting.method,
+          });
+        } else if (setting.method === 'Samba') {
+          if (!folderValue) {
+            setFolderValue('/');
+          }
+          recipients.push({
+            recipient_config_json: {
+              target: setting.recipients.target,
+              username: usernameValue,
+              password: passwordValue,
+              route: routeValue,
+              timestamp: timestampValue,
+              server: serverValue,
+              folder: folderValue,
             },
             type: setting.method,
           });
         } else {
           recipients.push({
             recipient_config_json: {
-              target: setting.recipients,
+              target: setting.recipients.target,
             },
             type: setting.method,
           });
@@ -906,7 +927,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
     let hasInfo = false;
 
     notificationSettings.forEach(setting => {
-      if (!!setting.method && setting.recipients?.length) {
+      if (!!setting.method && setting.recipients.target?.length) {
         hasInfo = true;
       }
     });
@@ -974,11 +995,10 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
         return {
           method: setting.type,
           // @ts-ignore: Type not assignable
-          recipients: config.target || setting.recipient_config_json,
+          recipients: config || setting.recipient_config_json,
           options: allowedNotificationMethods,
         };
       });
-
       setNotificationSettings(settings);
       setNotificationAddState(
         settings.length === allowedNotificationMethods.length
@@ -995,7 +1015,6 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
         typeof resource.validator_config_json === 'string'
           ? JSON.parse(resource.validator_config_json)
           : resource.validator_config_json;
-
       setConditionNotNull(resource.validator_type === 'not null');
 
       if (resource.chart) {
@@ -1063,7 +1082,6 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
   if (isHidden && show) {
     setIsHidden(false);
   }
-
   return (
     <StyledModal
       className="no-content-padding"
@@ -1411,14 +1429,20 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                 key={`NotificationMethod-${i}`}
                 onUpdate={updateNotificationSetting}
                 onRemove={removeNotificationSetting}
-                usernameSftpValue={usernameSftpValue}
-                passwordSftpValue={passwordSftpValue}
-                portSftpValue={portSftpValue}
-                routeSftpValue={routeSftpValue}
-                setUsernameSftpValue={setUsernameSftpValue}
-                setPasswordSftpValue={setPasswordSftpValue}
-                setPortSftpValue={setPortSftpValue}
-                setRouteSftpValue={setRouteSftpValue}
+                usernameValue={usernameValue}
+                passwordValue={passwordValue}
+                portValue={portValue}
+                routeValue={routeValue}
+                timestampValue={timestampValue}
+                serverValue={serverValue}
+                folderValue={folderValue}
+                setUsernameValue={setUsernameValue}
+                setPasswordValue={setPasswordValue}
+                setPortValue={setPortValue}
+                setRouteValue={setRouteValue}
+                setTimestampValue={setTimestampValue}
+                setServerValue={setServerValue}
+                setFolderValue={setFolderValue}
               />
             ))}
             <NotificationMethodAdd
