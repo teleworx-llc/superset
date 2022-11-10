@@ -137,6 +137,8 @@ const IconFileNames = [
   'queued',
   'refresh',
   'running',
+  'samba',
+  'sftp',
   'save',
   'sql',
   'search',
@@ -170,7 +172,13 @@ const iconOverrides: Record<string, React.FC> = {};
 IconFileNames.forEach(fileName => {
   const keyName = _.startCase(fileName).replace(/ /g, '');
   iconOverrides[keyName] = (props: IconType) => (
-    <Icon fileName={fileName} {...props} />
+    <Icon
+      fileName={fileName}
+      viewBox={
+        fileName === 'Samba' || fileName === 'Sftp' ? '0 0 56 24' : undefined
+      }
+      {...props}
+    />
   );
 });
 

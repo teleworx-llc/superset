@@ -41,6 +41,14 @@ export default function RecipientIcon({ type }: { type: string }) {
       recipientIconConfig.icon = <Icons.Slack css={StyledIcon} />;
       recipientIconConfig.label = RecipientIconName.Slack;
       break;
+    case RecipientIconName.Sftp:
+      recipientIconConfig.icon = <Icons.Sftp css={StyledIcon} />;
+      recipientIconConfig.label = RecipientIconName.Sftp;
+      break;
+    case RecipientIconName.Samba:
+      recipientIconConfig.icon = <Icons.Samba css={StyledIcon} />;
+      recipientIconConfig.label = RecipientIconName.Samba;
+      break;
     default:
       recipientIconConfig.icon = null;
       recipientIconConfig.label = '';
