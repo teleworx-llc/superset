@@ -27,13 +27,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
 :root {
-  --ifm-color-primary: #20a7c9;
-  --ifm-color-primary-dark: #1985a0;
+  --ifm-color-primary: #c00000;
+  --ifm-color-primary-dark: #a01a1a;
   --ifm-color-primary-darker: #t;
   --ifm-color-primary-darkest: #ffffff;
-  --ifm-color-primary-light: #79cade;
-  --ifm-color-primary-lighter: #a5dbe9;
-  --ifm-color-primary-lightest: #d2edf4;
+  --ifm-color-primary-light: #de7979;
+  --ifm-color-primary-lighter: #e9a5a5;
+  --ifm-color-primary-lightest: #f4d2d2;
   --ifm-code-font-size: 95%;
   --ifm-menu-link-padding-vertical: 12px;
   --doc-sidebar-width: 350px !important;

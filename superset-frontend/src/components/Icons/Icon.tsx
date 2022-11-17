@@ -28,10 +28,12 @@ const AntdIconComponent = ({
   iconColor,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   iconSize,
-  viewBox,
+  viewBox = '0 0 24 24',
+  width,
+  style,
   ...rest
 }: Omit<IconType, 'ref' | 'css'>) => (
-  <AntdIcon viewBox={viewBox || '0 0 24 24'} {...rest} />
+  <AntdIcon viewBox={viewBox} width={width} style={style} {...rest} />
 );
 
 export const StyledIcon = styled(AntdIconComponent)<IconType>`
@@ -47,7 +49,7 @@ export interface IconProps extends IconType {
 }
 
 export const Icon = (props: IconProps) => {
-  const { fileName, viewBox, ...iconProps } = props;
+  const { fileName, viewBox, width, style, ...iconProps } = props;
   const [, setLoaded] = useState(false);
   const ImportedSVG = useRef<React.FC<React.SVGProps<SVGSVGElement>>>();
   const name = fileName.replace('_', '-');
@@ -75,6 +77,8 @@ export const Icon = (props: IconProps) => {
       component={ImportedSVG.current || TransparentIcon}
       aria-label={name}
       viewBox={viewBox}
+      style={style}
+      width={width}
       {...iconProps}
     />
   );

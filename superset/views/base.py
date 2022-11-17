@@ -358,7 +358,7 @@ def common_bootstrap_payload() -> Dict[str, Any]:
     if conf.get("SLACK_API_TOKEN"):
         frontend_config["ALERT_REPORTS_NOTIFICATION_METHODS"] = [
             ReportRecipientType.EMAIL,
-            ReportRecipientType.SLACK,
+            #ReportRecipientType.SLACK,
             ReportRecipientType.SFTP,
             ReportRecipientType.SAMBA,
         ]
@@ -366,7 +366,7 @@ def common_bootstrap_payload() -> Dict[str, Any]:
         frontend_config["ALERT_REPORTS_NOTIFICATION_METHODS"] = [
             ReportRecipientType.EMAIL,
             ReportRecipientType.SFTP,
-            ReportRecipientType.SAMBA
+            ReportRecipientType.SAMBA,
         ]
 
     # verify client has google sheets installed

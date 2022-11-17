@@ -42,7 +42,7 @@ import Select, { propertyComparator } from 'src/components/Select/Select';
 import { FeatureFlag, isFeatureEnabled } from 'src/featureFlags';
 import withToasts from 'src/components/MessageToasts/withToasts';
 import Owner from 'src/types/Owner';
-import { AntdCheckbox } from 'src/components';
+// import { AntdCheckbox } from 'src/components';
 import TextAreaControl from 'src/explore/components/controls/TextAreaControl';
 import { useCommonConf } from 'src/views/CRUD/data/database/state';
 import {
@@ -339,9 +339,9 @@ const StyledRadioGroup = styled(Radio.Group)`
   margin-left: ${({ theme }) => theme.gridUnit * 5.5}px;
 `;
 
-const StyledCheckbox = styled(AntdCheckbox)`
-  margin-left: ${({ theme }) => theme.gridUnit * 5.5}px;
-`;
+// const StyledCheckbox = styled(AntdCheckbox)`
+//   margin-left: ${({ theme }) => theme.gridUnit * 5.5}px;
+// `;
 
 // Notification Method components
 const StyledNotificationAddButton = styled.div`
@@ -914,9 +914,9 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
     setReportFormat(target.value);
   };
 
-  const onForceScreenshotChange = (event: any) => {
-    setForceScreenshot(event.target.checked);
-  };
+  // const onForceScreenshotChange = (event: any) => {
+  //   setForceScreenshot(event.target.checked);
+  // };
 
   // Make sure notification settings has the required info
   const checkNotificationSettings = () => {
@@ -1351,7 +1351,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
               <span className="required">*</span>
             </StyledSectionTitle>
             <Radio.Group onChange={onContentTypeChange} value={contentType}>
-              <StyledRadio value="dashboard">{t('Dashboard')}</StyledRadio>
+              {/* <StyledRadio value="dashboard">{t('Dashboard')}</StyledRadio> */}
               <StyledRadio value="chart">{t('Chart')}</StyledRadio>
             </Radio.Group>
             <Select
@@ -1395,7 +1395,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                     onChange={onFormatChange}
                     value={reportFormat}
                   >
-                    <StyledRadio value="PNG">{t('Send as PNG')}</StyledRadio>
+                    {/* <StyledRadio value="PNG">{t('Send as PNG')}</StyledRadio>  */}
                     <StyledRadio value="CSV">{t('Send as CSV')}</StyledRadio>
                     {TEXT_BASED_VISUALIZATION_TYPES.includes(chartVizType) && (
                       <StyledRadio value="TEXT">
@@ -1406,7 +1406,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                 </div>
               </>
             )}
-            {(isReport || contentType === 'dashboard') && (
+            {/* {(isReport || contentType === 'dashboard') && (
               <div className="inline-container">
                 <StyledCheckbox
                   data-test="bypass-cache"
@@ -1417,7 +1417,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                   Ignore cache when generating screenshot
                 </StyledCheckbox>
               </div>
-            )}
+            )} */}
             <StyledSectionTitle>
               <h4>{t('Notification method')}</h4>
               <span className="required">*</span>

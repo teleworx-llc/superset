@@ -173,10 +173,20 @@ IconFileNames.forEach(fileName => {
   const keyName = _.startCase(fileName).replace(/ /g, '');
   iconOverrides[keyName] = (props: IconType) => (
     <Icon
+      style={
+        fileName === 'samba' || fileName === 'sftp'
+          ? {
+              stroke: 'currentColor',
+              strokeWidth: '0.50mm',
+              fill: 'currentColor',
+            }
+          : undefined
+      }
       fileName={fileName}
       viewBox={
-        fileName === 'Samba' || fileName === 'Sftp' ? '0 0 56 24' : undefined
+        fileName === 'samba' || fileName === 'sftp' ? '0 0 56 24' : undefined
       }
+      width={fileName === 'samba' || fileName === 'sftp' ? '56px' : undefined}
       {...props}
     />
   );

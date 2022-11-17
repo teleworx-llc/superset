@@ -74,8 +74,8 @@ class SftpNotification(BaseNotification):
 
         if timestamp:
             dt = datetime.now()
-            ts = datetime.timestamp(dt)
-            file_name = self._content.name + str(ts) + file_type
+            ts = str(dt).split('.', 1)[0]
+            file_name = self._content.name + ' ' + ts + file_type
         else:
             file_name = self._content.name + file_type
 
