@@ -20,6 +20,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { t, SupersetClient, makeApi, styled } from '@superset-ui/core';
+import { useTheme } from '@emotion/react';
 import moment from 'moment';
 import ActionsBar, { ActionProps } from 'src/components/ListView/ActionsBar';
 import FacePile from 'src/components/FacePile';
@@ -80,6 +81,11 @@ const RefreshContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.grayscale.light5};
 `;
 
+const notificationMethodText = {
+  Samba: 'Samba',
+  Sftp: 'Sftp',
+};
+
 function AlertList({
   addDangerToast,
   isReportEnabled = false,
@@ -89,6 +95,7 @@ function AlertList({
   const title = isReportEnabled ? t('report') : t('alert');
   const titlePlural = isReportEnabled ? t('reports') : t('alerts');
   const pathName = isReportEnabled ? 'Reports' : 'Alerts';
+  const { colors } = useTheme();
   const initialFilters = useMemo(
     () => [
       {
@@ -274,9 +281,23 @@ function AlertList({
             original: { recipients },
           },
         }: any) =>
-          recipients.map((r: any) => (
-            <RecipientIcon key={r.id} type={r.type} />
-          )),
+          recipients.map((r: any) => {
+            if (r.type === 'Email') {
+              return <RecipientIcon key={r.id} type={r.type} />;
+            }
+            return (
+              <p
+                style={{
+                  fontSize: '14px',
+                  color: colors.grayscale.light1,
+                  fontWeight: 'bold',
+                  margin: '0',
+                }}
+              >
+                {notificationMethodText[r.type].toUpperCase()}
+              </p>
+            );
+          }),
         accessor: 'recipients',
         Header: t('Notification method'),
         disableSortBy: true,
