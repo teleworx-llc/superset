@@ -94,7 +94,7 @@ PROPHET_TIME_GRAIN_MAP = {
 
 RESAMPLE_METHOD = ("asfreq", "bfill", "ffill", "linear", "median", "mean", "sum")
 
-FLAT_COLUMN_SEPARATOR = ", "
+FLAT_COLUMN_SEPARATOR = ";"
 
 
 def _is_multi_index_on_columns(df: DataFrame) -> bool:

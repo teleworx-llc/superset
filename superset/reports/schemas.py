@@ -116,6 +116,7 @@ class ReportRecipientConfigJSONSchema(Schema):
     timestamp = fields.Boolean()
     server = fields.String()
     folder = fields.String()
+    divider = fields.String()
     
     
 

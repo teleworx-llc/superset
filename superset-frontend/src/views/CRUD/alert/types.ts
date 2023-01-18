@@ -57,6 +57,7 @@ export type RecipientConfigJson = {
   timestamp?: boolean;
   server?: string;
   folder?: string;
+  divider?: string | null;
 };
 
 export type MetaObject = {

@@ -642,7 +642,7 @@ If you want to use the same flag in the client code, also add it to the FeatureF
 
 ```typescript
 export enum FeatureFlag {
-  SCOPED_FILTER = "SCOPED_FILTER",
+  SCOPED_FILTER = 'SCOPED_FILTER',
 }
 ```
 
@@ -1047,7 +1047,7 @@ In TypeScript/JavaScript, the technique is similar:
 we import `t` (simple translation), `tn` (translation containing a number).
 
 ```javascript
-import { t, tn } from "@superset-ui/translation";
+import { t, tn } from '@superset-ui/translation';
 ```
 
 ### Enabling language selection

@@ -57,6 +57,7 @@ import {
   RecipientConfigJson,
 } from 'src/views/CRUD/alert/types';
 import { InfoTooltipWithTrigger } from '@superset-ui/chart-controls';
+import { RadioChangeEvent } from 'antd/lib/radio';
 import { AlertReportCronScheduler } from './components/AlertReportCronScheduler';
 import { NotificationMethod } from './components/NotificationMethod';
 
@@ -84,7 +85,7 @@ interface AlertReportModalProps {
 }
 
 const DEFAULT_NOTIFICATION_METHODS: NotificationMethodOption[] = ['Email'];
-const DEFAULT_NOTIFICATION_FORMAT = 'PNG';
+const DEFAULT_NOTIFICATION_FORMAT = 'CSV';
 const CONDITIONS = [
   {
     label: t('< (Smaller than)'),
@@ -416,7 +417,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
   const [currentAlert, setCurrentAlert] =
     useState<Partial<AlertObject> | null>();
   const [isHidden, setIsHidden] = useState<boolean>(true);
-  const [contentType, setContentType] = useState<string>('dashboard');
+  const [contentType, setContentType] = useState<string>('chart');
   const [reportFormat, setReportFormat] = useState<string>(
     DEFAULT_NOTIFICATION_FORMAT,
   );
@@ -448,6 +449,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
   const [timestampValue, setTimestampValue] = useState<boolean>(false);
   const [serverValue, setServerValue] = useState<string>('');
   const [folderValue, setFolderValue] = useState<string>('/');
+  const [dividerMethod, setDividerMethod] = useState<string | null>(';');
 
   const onNotificationAdd = () => {
     const settings: NotificationSetting[] = notificationSettings.slice();
@@ -521,6 +523,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
               port: portValue,
               route: routeValue,
               timestamp: timestampValue,
+              divider: dividerMethod,
             },
             type: setting.method,
           });
@@ -537,6 +540,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
               timestamp: timestampValue,
               server: serverValue,
               folder: folderValue,
+              divider: dividerMethod,
             },
             type: setting.method,
           });
@@ -544,6 +548,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
           recipients.push({
             recipient_config_json: {
               target: setting.recipients.target,
+              divider: dividerMethod,
             },
             type: setting.method,
           });
@@ -1000,6 +1005,11 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
         };
       });
       setNotificationSettings(settings);
+      settings.forEach(setting => {
+        if (setting.recipients?.divider) {
+          setDividerMethod(setting.recipients.divider);
+        }
+      });
       setNotificationAddState(
         settings.length === allowedNotificationMethods.length
           ? 'hidden'
@@ -1082,6 +1092,11 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
   if (isHidden && show) {
     setIsHidden(false);
   }
+
+  const saveDividerMethod = (event: RadioChangeEvent) => {
+    setDividerMethod(event.target.value);
+  };
+
   return (
     <StyledModal
       className="no-content-padding"
@@ -1328,6 +1343,37 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                 <span className="input-label">seconds</span>
               </div>
             </StyledInputContainer>
+            {reportFormat === 'CSV' && (
+              <StyledInputContainer>
+                <div className="control-label">Divider options:</div>
+                <StyledRadioGroup value={dividerMethod}>
+                  <StyledRadio
+                    onChange={event => saveDividerMethod(event)}
+                    value=";"
+                  >
+                    Semicolon [;]
+                  </StyledRadio>
+                  <StyledRadio
+                    onChange={event => saveDividerMethod(event)}
+                    value="Tab"
+                  >
+                    Tab key [Tab]
+                  </StyledRadio>
+                  <StyledRadio
+                    onChange={event => saveDividerMethod(event)}
+                    value=","
+                  >
+                    Comma [,]
+                  </StyledRadio>
+                  <StyledRadio
+                    onChange={event => saveDividerMethod(event)}
+                    value="|"
+                  >
+                    Pipe [|]
+                  </StyledRadio>
+                </StyledRadioGroup>
+              </StyledInputContainer>
+            )}
             {!isReport && (
               <StyledInputContainer>
                 <div className="control-label">{t('Grace period')}</div>
@@ -1397,11 +1443,24 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                   >
                     {/* <StyledRadio value="PNG">{t('Send as PNG')}</StyledRadio>  */}
                     <StyledRadio value="CSV">{t('Send as CSV')}</StyledRadio>
-                    {TEXT_BASED_VISUALIZATION_TYPES.includes(chartVizType) && (
-                      <StyledRadio value="TEXT">
-                        {t('Send as text')}
-                      </StyledRadio>
-                    )}
+                    {notificationSettings.map(notificationSetting => (
+                      <>
+                        {TEXT_BASED_VISUALIZATION_TYPES.includes(
+                          chartVizType,
+                        ) &&
+                          notificationSetting.method === 'Email' && (
+                            <StyledRadio value="TEXT">
+                              {t('Send as text')}
+                            </StyledRadio>
+                          )}
+                      </>
+                    ))}
+                    {/* {TEXT_BASED_VISUALIZATION_TYPES.includes(chartVizType) &&
+                      notificationSettings[0].method === 'Email' && (
+                        <StyledRadio value="TEXT">
+                          {t('Send as text')}
+                        </StyledRadio>
+                      )} */}
                   </StyledRadioGroup>
                 </div>
               </>

@@ -21,13 +21,10 @@ import logging
 import re
 import socket
 import tempfile
-from datetime import datetime
+
 from smb.SMBConnection import SMBConnection
 from io import IOBase
-from io import BytesIO
-from io import StringIO
 from typing import Sequence, Union
-
 
 from flask_babel import gettext as __
 
@@ -35,6 +32,7 @@ from superset import app
 from superset.models.reports import ReportRecipientType
 from superset.reports.notifications.base import BaseNotification
 from superset.reports.notifications.exceptions import NotificationError
+from superset.utils import csv
 
 logger = logging.getLogger(__name__)
 
@@ -61,27 +59,11 @@ class SambaNotification(BaseNotification):
         password = self._get_data("password")
         server_name = self._get_data("server")
         shared_folder = self._get_data("folder")
-        path = "Temp" #self._get_data("route")
+        path = self._get_data("route")
         server_ip = self._get_data("target")
         timestamp = self._get_data("timestamp")
+        delimiter = self._get_data("divider")
 
-        #file_obj = open('/app/superset/reports/notifications/test2.txt', 'rb')
-
-        if self._content.csv:
-            file_type = '.csv'
-        elif self._content.screenshots:
-            file_type = '.png'
-        else:
-            file_type = '.txt'
-
-        if timestamp:
-            dt = datetime.now()
-            ts = str(dt).split('.', 1)[0]
-            file_name = self._content.name + ' ' + ts + file_type
-        else:
-            file_name = self._content.name + file_type
-
-        file_name = re.sub(r'[\\/*?:"<>|]',"",file_name) #Clean Filename Replacing not valid characters
         files = self._get_inline_files()
 
         try:
@@ -91,17 +73,18 @@ class SambaNotification(BaseNotification):
 
             if files:
                 for file in files:
+                    file_csv = self.csv_manager(file, delimiter)
                     temp = tempfile.TemporaryFile()
-                    temp.write(file)
+                    temp.write(file_csv)
                     temp.seek(0)
-                    conn.storeFile(path, shared_folder + file_name, temp)
+                    conn.storeFile(path, shared_folder + self.set_timestamp(timestamp, self.set_file_type()), temp)
 
             else:
                 content = str.encode(self._content.embedded_data.to_string())
                 temp = tempfile.TemporaryFile()
                 temp.write(content)
                 temp.seek(0)
-                conn.storeFile(path, shared_folder + file_name, temp) 
+                conn.storeFile(path, shared_folder + self.set_timestamp(timestamp, self.set_file_type()), temp) 
 
             conn.close()
             

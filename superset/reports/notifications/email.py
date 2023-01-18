@@ -88,7 +88,7 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
         if self._content.embedded_data is not None:
             df = self._content.embedded_data
             html_table = bleach.clean(
-                df.to_html(na_rep="", index=True),
+                df.to_html(na_rep="", index=False),
                 tags=TABLE_TAGS,
                 attributes=TABLE_ATTRIBUTES,
             )
@@ -137,7 +137,9 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
         )
 
         if self._content.csv:
-            csv_data = {__("%(name)s.csv", name=self._content.name): self._content.csv}
+            delimiter = self._get_to("divider")
+            file_csv = self.csv_manager(self._content.csv, delimiter)
+            csv_data = {__("%(name)s.csv", name=self._content.name): file_csv}
         return EmailContent(body=body, images=images, data=csv_data)
 
     def _get_subject(self) -> str:
@@ -147,14 +149,14 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
             title=self._content.name,
         )
 
-    def _get_to(self) -> str:
-        return json.loads(self._recipient.recipient_config_json)["target"]
+    def _get_to(self, tag_name) -> str:
+        return json.loads(self._recipient.recipient_config_json)[tag_name]
 
     @statsd_gauge("reports.email.send")
     def send(self) -> None:
         subject = self._get_subject()
         content = self._get_content()
-        to = self._get_to()
+        to = self._get_to("target")
         try:
             send_email_smtp(
                 to,

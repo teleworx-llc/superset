@@ -5799,6 +5799,10 @@
           },
           "folder":{
             "type": "string"
+          },
+          "divider":{
+            "nullable":true,
+            "type": "string"
           }
         },
         "type": "object"

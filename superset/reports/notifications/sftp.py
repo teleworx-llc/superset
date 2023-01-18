@@ -18,14 +18,11 @@
 
 import json
 import logging
-import re
 import paramiko
-from datetime import datetime
 from io import IOBase
 from io import BytesIO
 from io import StringIO
 from typing import Sequence, Union
-
 
 from flask_babel import gettext as __
 
@@ -64,22 +61,8 @@ class SftpNotification(BaseNotification):
         host_port = self._get_data("port")
         send_route = self._get_data("route")
         timestamp = self._get_data("timestamp")
-        
-        if self._content.csv:
-            file_type = '.csv'
-        elif self._content.screenshots:
-            file_type = '.png'
-        else:
-            file_type = '.txt'
+        delimiter = self._get_data("divider")
 
-        if timestamp:
-            dt = datetime.now()
-            ts = str(dt).split('.', 1)[0]
-            file_name = self._content.name + ' ' + ts + file_type
-        else:
-            file_name = self._content.name + file_type
-
-        file_name = re.sub(r'[\\/*?:"<>|]',"",file_name) #Clean Filename Replacing not valid characters
         files = self._get_inline_files()
 
         try:
@@ -88,9 +71,10 @@ class SftpNotification(BaseNotification):
 
             if files:
                 for file in files:
-                    sftp_client.putfo(BytesIO(file), send_route+file_name)
+                    file_csv = self.csv_manager(file, delimiter)
+                    sftp_client.putfo(BytesIO(file_csv), send_route + self.set_timestamp(timestamp, self.set_file_type()))
             else:
-                sftp_client.putfo(StringIO(self._content.embedded_data.to_string()), send_route+file_name, confirm=False)
+                sftp_client.putfo(StringIO(self._content.embedded_data.to_string()), send_route + self.set_timestamp(timestamp, self.set_file_type()) , confirm=False)
 
             sftp_client.close()
             ssh.close()
