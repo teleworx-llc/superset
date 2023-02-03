@@ -27,10 +27,12 @@ for these chart types.
 """
 
 from io import StringIO
+import csv
 from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
 
 import pandas as pd
 
+from superset import app
 from superset.common.chart_data import ChartDataResultFormat
 from superset.utils.core import (
     DTTM_ALIAS,
@@ -42,6 +44,7 @@ from superset.utils.core import (
 if TYPE_CHECKING:
     from superset.connectors.base.models import BaseDatasource
 
+config = app.config
 
 def get_column_key(label: Tuple[str, ...], metrics: List[str]) -> Tuple[Any, ...]:
     """
@@ -317,6 +320,9 @@ def apply_post_process(
 ) -> Dict[Any, Any]:
     form_data = form_data or {}
 
+    encoding = config["CSV_EXPORT"].get("encoding", "utf-8")
+    sep = config["CSV_EXPORT"].get("sep", ";")
+
     viz_type = form_data.get("viz_type")
     if viz_type not in post_processors:
         return result
@@ -327,7 +333,7 @@ def apply_post_process(
         if query["result_format"] == ChartDataResultFormat.JSON:
             df = pd.DataFrame.from_dict(query["data"])
         elif query["result_format"] == ChartDataResultFormat.CSV:
-            df = pd.read_csv(StringIO(query["data"]))
+            df = pd.read_csv(StringIO(query["data"]), sep=sep, encoding=encoding)
         else:
             raise Exception(f"Result format {query['result_format']} not supported")
 
@@ -358,7 +364,7 @@ def apply_post_process(
             query["data"] = processed_df.to_dict()
         elif query["result_format"] == ChartDataResultFormat.CSV:
             buf = StringIO()
-            processed_df.to_csv(buf)
+            processed_df.to_csv(buf, sep=sep, encoding=encoding, index=False)
             buf.seek(0)
             query["data"] = buf.getvalue()
 

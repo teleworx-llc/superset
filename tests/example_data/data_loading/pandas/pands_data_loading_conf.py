@@ -20,7 +20,7 @@ from typing import Any, Dict
 
 default_pandas_data_loader_config = {
     "if_exists": "replace",
-    "chunksize": 500,
+    "chunksize": 600,
     "index": False,
     "method": "multi",
     "strftime": "%Y-%m-%d %H:%M:%S",

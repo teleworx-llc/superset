@@ -89,21 +89,15 @@ class BaseNotification:  # pylint: disable=too-few-public-methods
         file_name = re.sub(r'[\\/*?:"<>|]',"",file_name) #Clean Filename Replacing not valid characters
         return file_name
 
-    def get_parameters(self) -> None:
-        encoding = current_app.config["CSV_EXPORT"].get("encoding", "utf-8")
-        sep = current_app.config["CSV_EXPORT"].get("sep", ",")
-        return [encoding, sep]
-
     def csv_manager(self, file, delimiter) -> None:
-        sep = self.get_parameters()[1]
-        encoding = self.get_parameters()[0]
+        encoding = current_app.config["CSV_EXPORT"].get("encoding", "utf-8")
+        sep = current_app.config["CSV_EXPORT"].get("sep", ";")
         if delimiter:
             f_delimiter = delimiter
         else:
             f_delimiter = sep
         file_content = file.decode(encoding)
-        df = pd.read_csv(StringIO(file_content), sep=sep)
-        df.drop(columns=df.columns[0], axis=1,  inplace=True)
+        df = pd.read_csv(StringIO(file_content), sep=sep) 
         escaped_csv_str = csv.df_to_escaped_csv(df, encoding=encoding, sep=f_delimiter if f_delimiter != 'Tab' else '\t', index=False)
         file_csv = escaped_csv_str.encode(encoding)
         return file_csv

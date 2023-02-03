@@ -33,11 +33,10 @@ from superset.models.core import Database
 
 logger = logging.getLogger(__name__)
 
-CHUNKSIZE = 512
+CHUNKSIZE = 600
 VARCHAR = re.compile(r"VARCHAR\((\d+)\)", re.IGNORECASE)
 
 JSON_KEYS = {"params", "template_params", "extra"}
-
 
 type_map = {
     "BOOLEAN": Boolean(),

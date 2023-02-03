@@ -789,10 +789,10 @@ HTTP_HEADERS: Dict[str, Any] = {}
 DEFAULT_DB_ID = None
 
 # Timeout duration for SQL Lab synchronous queries
-SQLLAB_TIMEOUT = int(timedelta(seconds=30).total_seconds())
+SQLLAB_TIMEOUT = int(timedelta(seconds=60).total_seconds())
 
 # Timeout duration for SQL Lab query validation
-SQLLAB_VALIDATION_TIMEOUT = int(timedelta(seconds=10).total_seconds())
+SQLLAB_VALIDATION_TIMEOUT = int(timedelta(seconds=30).total_seconds())
 
 # SQLLAB_DEFAULT_DBID
 SQLLAB_DEFAULT_DBID = None
@@ -803,7 +803,7 @@ SQLLAB_ASYNC_TIME_LIMIT_SEC = int(timedelta(hours=6).total_seconds())
 # Some databases support running EXPLAIN queries that allow users to estimate
 # query costs before they run. These EXPLAIN queries should have a small
 # timeout.
-SQLLAB_QUERY_COST_ESTIMATE_TIMEOUT = int(timedelta(seconds=10).total_seconds())
+SQLLAB_QUERY_COST_ESTIMATE_TIMEOUT = int(timedelta(seconds=20).total_seconds())
 # The feature is off by default, and currently only supported in Presto and Postgres.
 # It also need to be enabled on a per-database basis, by adding the key/value pair
 # `cost_estimate_enabled: true` to the database `extra` attribute.

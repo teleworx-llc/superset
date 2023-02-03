@@ -203,9 +203,9 @@ export default function HeaderReportDropDown({
       )
     ) : (
       <Menu selectable={false} css={onMenuHover}>
-        <Menu.Item onClick={handleShowMenu}>
+        {/* <Menu.Item onClick={handleShowMenu}>
           {t('Set up an email report')}
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Divider />
       </Menu>
     );
