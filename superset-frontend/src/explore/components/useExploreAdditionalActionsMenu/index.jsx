@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+//Comented code is required to re-enable manage report options.
 import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FileOutlined, FileImageOutlined } from '@ant-design/icons';
@@ -28,7 +29,7 @@ import { exportChart, getChartKey } from 'src/explore/exploreUtils';
 import downloadAsImage from 'src/utils/downloadAsImage';
 import { getChartPermalink } from 'src/utils/urlUtils';
 import copyTextToClipboard from 'src/utils/copy';
-import HeaderReportDropDown from 'src/components/ReportModal/HeaderReportDropdown';
+// import HeaderReportDropDown from 'src/components/ReportModal/HeaderReportDropdown';
 import ViewQueryModal from '../controls/ViewQueryModal';
 import EmbedCodeContent from '../EmbedCodeContent';
 
@@ -99,7 +100,7 @@ export const useExploreAdditionalActionsMenu = (
 ) => {
   const theme = useTheme();
   const { addDangerToast, addSuccessToast } = useToasts();
-  const [showReportSubMenu, setShowReportSubMenu] = useState(null);
+  // const [showReportSubMenu, setShowReportSubMenu] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState([]);
   const chart = useSelector(
@@ -317,7 +318,7 @@ export const useExploreAdditionalActionsMenu = (
           </Menu.Item>
         </Menu.SubMenu>
         <Menu.Divider />
-        {showReportSubMenu ? (
+        {/* showReportSubMenu ? (
           <>
             <Menu.SubMenu title={t('Manage email report')}>
               <HeaderReportDropDown
@@ -341,7 +342,7 @@ export const useExploreAdditionalActionsMenu = (
               useTextMenu
             />
           </Menu>
-        )}
+        ) */}
         <Menu.Item key={MENU_KEYS.VIEW_QUERY}>
           <ModalTrigger
             triggerNode={
@@ -371,7 +372,7 @@ export const useExploreAdditionalActionsMenu = (
       isDropdownVisible,
       latestQueryFormData,
       openSubmenus,
-      showReportSubMenu,
+      // showReportSubMenu,
       slice,
       sqlSupported,
       theme.gridUnit,

@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+//Comented code is required to re-enable manage report options.
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -27,7 +28,7 @@ import ShareMenuItems from 'src/dashboard/components/menu/ShareMenuItems';
 import CssEditor from 'src/dashboard/components/CssEditor';
 import RefreshIntervalModal from 'src/dashboard/components/RefreshIntervalModal';
 import SaveModal from 'src/dashboard/components/SaveModal';
-import HeaderReportDropdown from 'src/components/ReportModal/HeaderReportDropdown';
+// import HeaderReportDropdown from 'src/components/ReportModal/HeaderReportDropdown';
 import injectCustomCss from 'src/dashboard/util/injectCustomCss';
 import { SAVE_TYPE_NEWDASHBOARD } from 'src/dashboard/util/constants';
 import FilterScopeModal from 'src/dashboard/components/filterscope/FilterScopeModal';
@@ -105,7 +106,7 @@ class HeaderActionsDropdown extends React.PureComponent {
     this.state = {
       css: props.customCss,
       cssTemplates: [],
-      showReportSubMenu: null,
+      // showReportSubMenu: null,
     };
 
     this.changeCss = this.changeCss.bind(this);
@@ -139,11 +140,11 @@ class HeaderActionsDropdown extends React.PureComponent {
     }
   }
 
-  setShowReportSubMenu(show) {
-    this.setState({
-      showReportSubMenu: show,
-    });
-  }
+  // setShowReportSubMenu(show) {
+  //   this.setState({
+  //     showReportSubMenu: show,
+  //   });
+  // }
 
   changeCss(css) {
     this.props.onChange();
@@ -341,7 +342,7 @@ class HeaderActionsDropdown extends React.PureComponent {
           </Menu.Item>
         )}
         <Menu.Divider />
-        {!editMode ? (
+        {/* !editMode ? (
           this.state.showReportSubMenu ? (
             <>
               <Menu.SubMenu title={t('Manage email report')}>
@@ -367,7 +368,7 @@ class HeaderActionsDropdown extends React.PureComponent {
               />
             </Menu>
           )
-        ) : null}
+          ) : null */}
         {editMode &&
           filterboxMigrationState !== FILTER_BOX_MIGRATION_STATES.CONVERTED && (
             <Menu.Item key={MENU_KEYS.SET_FILTER_MAPPING}>
