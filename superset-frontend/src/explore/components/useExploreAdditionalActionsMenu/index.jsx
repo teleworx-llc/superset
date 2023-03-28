@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-//Comented code is required to re-enable manage report options.
+// Comented code is required to re-enable manage report options.
 import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FileOutlined, FileImageOutlined } from '@ant-design/icons';

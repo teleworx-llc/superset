@@ -17,6 +17,7 @@
  * under the License.
  */
 /* eslint-env browser */
+
 import moment from 'moment';
 import React from 'react';
 import PropTypes from 'prop-types';
