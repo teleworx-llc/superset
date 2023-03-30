@@ -147,9 +147,10 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
             file = file_csv.decode(encoding)
             df = pd.read_csv(StringIO(file), sep=delimiter)
             compression_opts = dict(method = 'zip', archive_name = self._content.name + '.csv')
-            zip_csv = csv.df_to_escaped_csv(df, index=False, encoding=encoding, sep=delimiter if delimiter != 'Tab' else '\t', compression=compression_opts)
-            zip_csv_file = zip_csv.encode(encoding)
-            csv_data = {__("%(name)s.zip", name=self._content.name): zip_csv_file}
+            csv.df_to_escaped_csv(df, path_or_buf='/tmp/zip_csv.zip', index=False, encoding=encoding, sep=delimiter if delimiter != 'Tab' else '\t', compression=compression_opts)
+            with open('/tmp/zip_csv.zip','rb') as zip_file:
+                zip_csv = zip_file.read()
+            csv_data = {__("%(name)s.zip", name=self._content.name): zip_csv}
         return EmailContent(body=body, images=images, data=csv_data)
 
     def _get_subject(self) -> str:
