@@ -75,6 +75,7 @@ interface NotificationMethodProps {
   portValue: string;
   routeValue: string;
   timestampValue: boolean;
+  zipValue: boolean;
   serverValue: string;
   folderValue: string;
   setUsernameValue: Dispatch<SetStateAction<string>>;
@@ -82,6 +83,7 @@ interface NotificationMethodProps {
   setPortValue: Dispatch<SetStateAction<string>>;
   setRouteValue: Dispatch<SetStateAction<string>>;
   setTimestampValue: Dispatch<SetStateAction<boolean>>;
+  setZipValue: Dispatch<SetStateAction<boolean>>;
   setServerValue: Dispatch<SetStateAction<string>>;
   setFolderValue: Dispatch<SetStateAction<string>>;
 }
@@ -98,6 +100,7 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
   timestampValue,
   serverValue,
   folderValue,
+  zipValue,
   setUsernameValue,
   setPasswordValue,
   setPortValue,
@@ -105,6 +108,7 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
   setTimestampValue,
   setServerValue,
   setFolderValue,
+  setZipValue,
 }) => {
   const { method, recipients, options } = setting || {};
   const [recipientValue, setRecipientValue] = useState<string>(
@@ -133,6 +137,9 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
     }
     if (recipients?.folder) {
       setFolderValue(recipients?.folder);
+    }
+    if (recipients?.zip) {
+      setZipValue(recipients?.zip);
     }
   }, []);
 
@@ -191,6 +198,17 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
         setFolderValue('');
         setTimestampValue(false);
       }
+      if (method === 'Email') {
+        updatedSetting = {
+          ...setting,
+          method,
+          recipients: {
+            target: '',
+            zip: true,
+          },
+        };
+        setZipValue(true);
+      }
       onUpdate(index, updatedSetting);
     }
   };
@@ -235,6 +253,11 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
   const onTimestampChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     setTimestampValue(target.checked);
+  };
+
+  const onZipChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { target } = event;
+    setZipValue(target.checked);
   };
 
   const onServerChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -391,6 +414,29 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
                     style={{ margin: '0' }}
                   />
                   Show timestamp on report name
+                </label>
+              </div>
+            </StyledInputContainer>
+          )}
+          {method === 'Email' && (
+            <StyledInputContainer>
+              <div className="input-container">
+                <label
+                  htmlFor="zip"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    id="zip"
+                    onChange={onZipChange}
+                    checked={zipValue}
+                    style={{ margin: '0' }}
+                  />
+                  Zip CSV
                 </label>
               </div>
             </StyledInputContainer>

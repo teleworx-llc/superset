@@ -23,6 +23,7 @@ from dataclasses import dataclass
 from email.utils import make_msgid, parseaddr
 from typing import Any, Dict, Optional
 from io import StringIO
+import re
 
 import bleach
 from flask_babel import gettext as __
@@ -141,17 +142,25 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
         )
 
         if self._content.csv:
-            encoding = current_app.config["CSV_EXPORT"].get("encoding", "utf-8")
             delimiter = self._get_to("divider")
+            is_zip = self._get_to("zip")
             file_csv = self.csv_manager(self._content.csv, delimiter)
-            file = file_csv.decode(encoding)
-            df = pd.read_csv(StringIO(file), sep=delimiter)
-            compression_opts = dict(method = 'zip', archive_name = self._content.name + '.csv')
-            csv.df_to_escaped_csv(df, path_or_buf='/tmp/zip_csv.zip', index=False, encoding=encoding, sep=delimiter if delimiter != 'Tab' else '\t', compression=compression_opts)
-            with open('/tmp/zip_csv.zip','rb') as zip_file:
-                zip_csv = zip_file.read()
-            csv_data = {__("%(name)s.zip", name=self._content.name): zip_csv}
+            file_name = re.sub(r'[\\/*?:"<>|]',"",self._content.name)
+            if is_zip == False:
+                csv_data = {__("%(name)s.csv", name=file_name): file_csv}
+            else:
+                csv_data = {__("%(name)s.zip", name=file_name): self._zip_file(file_csv, delimiter, file_name)}
         return EmailContent(body=body, images=images, data=csv_data)
+
+    def _zip_file(self, file, delimiter, file_name) -> None:
+        encoding = current_app.config["CSV_EXPORT"].get("encoding", "utf-8")
+        file_csv = file.decode(encoding)
+        df = pd.read_csv(StringIO(file_csv), sep=delimiter if delimiter != 'Tab' else '\t')
+        compression_opts = dict(method = 'zip', archive_name = file_name + '.csv')
+        csv.df_to_escaped_csv(df, path_or_buf='/tmp/zip_csv.zip', index=False, encoding=encoding, sep=delimiter if delimiter != 'Tab' else '\t', compression=compression_opts, doublequote=False)
+        with open('/tmp/zip_csv.zip','rb') as zip_file:
+            zip_csv = zip_file.read()
+        return zip_csv
 
     def _get_subject(self) -> str:
         return __(

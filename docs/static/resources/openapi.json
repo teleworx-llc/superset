@@ -5803,6 +5803,9 @@
           "divider":{
             "nullable":true,
             "type": "string"
+          },
+          "zip":{
+            "type": "boolean"
           }
         },
         "type": "object"

@@ -117,6 +117,7 @@ class ReportRecipientConfigJSONSchema(Schema):
     server = fields.String()
     folder = fields.String()
     divider = fields.String()
+    zip = fields.Boolean()
     
     
 

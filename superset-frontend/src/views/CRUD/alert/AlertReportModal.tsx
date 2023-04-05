@@ -450,6 +450,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
   const [serverValue, setServerValue] = useState<string>('');
   const [folderValue, setFolderValue] = useState<string>('/');
   const [dividerMethod, setDividerMethod] = useState<string | null>(';');
+  const [zipValue, setZipValue] = useState<boolean>(true);
 
   const onNotificationAdd = () => {
     const settings: NotificationSetting[] = notificationSettings.slice();
@@ -549,6 +550,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
             recipient_config_json: {
               target: setting.recipients.target,
               divider: dividerMethod,
+              zip: zipValue,
             },
             type: setting.method,
           });
@@ -1495,6 +1497,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                 timestampValue={timestampValue}
                 serverValue={serverValue}
                 folderValue={folderValue}
+                zipValue={zipValue}
                 setUsernameValue={setUsernameValue}
                 setPasswordValue={setPasswordValue}
                 setPortValue={setPortValue}
@@ -1502,6 +1505,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                 setTimestampValue={setTimestampValue}
                 setServerValue={setServerValue}
                 setFolderValue={setFolderValue}
+                setZipValue={setZipValue}
               />
             ))}
             <NotificationMethodAdd

@@ -58,6 +58,7 @@ export type RecipientConfigJson = {
   server?: string;
   folder?: string;
   divider?: string | null;
+  zip?: boolean;
 };
 
 export type MetaObject = {
