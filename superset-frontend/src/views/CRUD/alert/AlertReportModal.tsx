@@ -450,7 +450,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
   const [serverValue, setServerValue] = useState<string>('');
   const [folderValue, setFolderValue] = useState<string>('/');
   const [dividerMethod, setDividerMethod] = useState<string | null>(';');
-  const [zipValue, setZipValue] = useState<boolean>(true);
+  const [zipValue, setZipValue] = useState<boolean>(false);
 
   const onNotificationAdd = () => {
     const settings: NotificationSetting[] = notificationSettings.slice();
@@ -1506,6 +1506,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
                 setServerValue={setServerValue}
                 setFolderValue={setFolderValue}
                 setZipValue={setZipValue}
+                reportFormat={reportFormat}
               />
             ))}
             <NotificationMethodAdd

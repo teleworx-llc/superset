@@ -78,6 +78,7 @@ interface NotificationMethodProps {
   zipValue: boolean;
   serverValue: string;
   folderValue: string;
+  reportFormat: string;
   setUsernameValue: Dispatch<SetStateAction<string>>;
   setPasswordValue: Dispatch<SetStateAction<string>>;
   setPortValue: Dispatch<SetStateAction<string>>;
@@ -101,6 +102,7 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
   serverValue,
   folderValue,
   zipValue,
+  reportFormat,
   setUsernameValue,
   setPasswordValue,
   setPortValue,
@@ -204,10 +206,10 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
           method,
           recipients: {
             target: '',
-            zip: true,
+            zip: false,
           },
         };
-        setZipValue(true);
+        setZipValue(false);
       }
       onUpdate(index, updatedSetting);
     }
@@ -418,7 +420,7 @@ export const NotificationMethod: FunctionComponent<NotificationMethodProps> = ({
               </div>
             </StyledInputContainer>
           )}
-          {method === 'Email' && (
+          {method === 'Email' && reportFormat === 'CSV' && (
             <StyledInputContainer>
               <div className="input-container">
                 <label

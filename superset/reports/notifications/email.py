@@ -22,7 +22,8 @@ import pandas as pd
 from dataclasses import dataclass
 from email.utils import make_msgid, parseaddr
 from typing import Any, Dict, Optional
-from io import StringIO
+from io import BytesIO
+from zipfile import ZipFile
 import re
 
 import bleach
@@ -145,22 +146,21 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
             delimiter = self._get_to("divider")
             is_zip = self._get_to("zip")
             file_csv = self.csv_manager(self._content.csv, delimiter)
-            file_name = re.sub(r'[\\/*?:"<>|]',"",self._content.name)
-            if is_zip == False:
-                csv_data = {__("%(name)s.csv", name=file_name): file_csv}
+            csv_name = self.set_timestamp(None, '.csv')
+            if not is_zip:
+                csv_data = {__("%(name)s", name=csv_name): file_csv}
             else:
-                csv_data = {__("%(name)s.zip", name=file_name): self._zip_file(file_csv, delimiter, file_name)}
+                zip_name = self.set_timestamp(None, '.zip')
+                csv_data = {__("%(name)s", name=zip_name): self._zip_file(file_csv, csv_name)}
         return EmailContent(body=body, images=images, data=csv_data)
 
-    def _zip_file(self, file, delimiter, file_name) -> None:
-        encoding = current_app.config["CSV_EXPORT"].get("encoding", "utf-8")
-        file_csv = file.decode(encoding)
-        df = pd.read_csv(StringIO(file_csv), sep=delimiter if delimiter != 'Tab' else '\t')
-        compression_opts = dict(method = 'zip', archive_name = file_name + '.csv')
-        csv.df_to_escaped_csv(df, path_or_buf='/tmp/zip_csv.zip', index=False, encoding=encoding, sep=delimiter if delimiter != 'Tab' else '\t', compression=compression_opts, doublequote=False)
-        with open('/tmp/zip_csv.zip','rb') as zip_file:
-            zip_csv = zip_file.read()
-        return zip_csv
+    def _zip_file(self, file_content, file_name) -> None:
+        zip_file = BytesIO()
+        with ZipFile(zip_file, 'w') as zip_archive:
+            # Add files on zip archive
+            with zip_archive.open(file_name, 'w') as f:
+                f.write(file_content)
+        return zip_file.getbuffer().tobytes()
 
     def _get_subject(self) -> str:
         return __(
