@@ -66,6 +66,7 @@ setup(
         "console_scripts": ["superset=superset.cli.main:superset"],
     },
     install_requires=[
+        "Authlib==1.2.0",
         "backoff>=1.8.0",
         "bleach>=3.0.2, <4.0.0",
         "cachelib>=0.4.1,<0.5",

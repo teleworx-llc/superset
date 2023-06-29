@@ -1,4 +1,54 @@
 from celery.schedules import crontab
+from flask_appbuilder.security.manager import AUTH_OAUTH
+from custom_sso_security_manager import CustomSsoSecurityManager
+
+# Set the authentication type to OAuth
+AUTH_TYPE = AUTH_OAUTH
+
+OAUTH_PROVIDERS = [
+    {   'name':'azure',
+        'token_key':'access_token', # Name of the token in the response of access_token_url
+        'icon':'fa-windows',   # Icon for the provider
+        'remote_app': {
+            'client_id':'1f410551-6168-4cde-872d-b422dc04519b',  # Client Id (Identify Superset application)
+            'client_secret':'I.A8Q~CDdU4H4Hrq-_MXoa9qNQaLwWPwMXIT3bML', # Secret for this Client Id (Identify Superset application)
+            'api_base_url':'https://login.microsoftonline.com/70c318a8-f4bd-4995-9bb9-e4b66fb73edf/oauth2',
+            'client_kwargs':{
+                'scope': 'User.read name prefered_username email profile upn',               # Scope for the Authorization
+                'resource': '1f410551-6168-4cde-872d-b422dc04519b'
+            },
+            'request_token_url': None,
+            'access_token_url':'https://login.microsoftonline.com/70c318a8-f4bd-4995-9bb9-e4b66fb73edf/oauth2/token',
+            'authorize_url':'https://login.microsoftonline.com/70c318a8-f4bd-4995-9bb9-e4b66fb73edf/oauth2/authorize'
+        }
+    }
+]
+
+# Will allow user self registration, allowing to create Flask users from Authorized User
+AUTH_USER_REGISTRATION = True
+
+# The default user self registration role
+#AUTH_USER_REGISTRATION_ROLE = "Public"
+AUTH_USER_REGISTRATION_ROLE = "Alpha"
+
+# Replace users database roles each login with those received from OAUTH/LDAP
+AUTH_ROLES_SYNC_AT_LOGIN = True
+
+# A mapping from LDAP/OAUTH group names to FAB roles
+#AUTH_ROLES_MAPPING = {
+    # For OAUTH
+    #"f2865c33-0e85-4ea6-9592-0adef9363973": ["Admin"],
+    # "ADMIN_GROUP_NAME": ["Admin"],
+    # For LDAP
+    # "cn=User,ou=groups,dc=example,dc=com": ["User"],
+    # "cn=Admin,ou=groups,dc=example,dc=com": ["Admin"],
+#}
+
+# Self registration role based on user info
+AUTH_USER_REGISTRATION_ROLE_JMESPATH = "contains(['f2865c33-0e85-4ea6-9592-0adef9363973'], idTokenClaims.groups) && 'Admin' || 'Gamma'"
+
+
+#CUSTOM_SECURITY_MANAGER = CustomSsoSecurityManager
 
 FEATURE_FLAGS = {
     "ALERT_REPORTS": True,
