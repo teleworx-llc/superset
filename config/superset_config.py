@@ -1,6 +1,6 @@
 from celery.schedules import crontab
 from flask_appbuilder.security.manager import AUTH_OAUTH
-from custom_sso_security_manager import CustomSsoSecurityManager
+#from custom_sso_security_manager import CustomSsoSecurityManager
 
 # Set the authentication type to OAuth
 AUTH_TYPE = AUTH_OAUTH
@@ -49,6 +49,9 @@ AUTH_USER_REGISTRATION_ROLE_JMESPATH = "contains(['f2865c33-0e85-4ea6-9592-0adef
 
 
 #CUSTOM_SECURITY_MANAGER = CustomSsoSecurityManager
+
+ENABLE_PROXY_FIX = True
+#PROXY_FIX_CONFIG = {"x_for": 1, "x_proto": 1, "x_host": 1, "x_port": 0, "x_prefix": 1}
 
 FEATURE_FLAGS = {
     "ALERT_REPORTS": True,
